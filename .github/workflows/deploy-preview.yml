@@ -33,8 +33,9 @@ jobs:
           touch .env
           echo DATABASE_URL=${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb >> .env
           echo DIRECT_DATABASE_URL=${{ steps.create_branch.outputs.db_url}}/neondb >> .env
-          npx prisma generate
-          npx prisma migrate deploy
+          npx install -g pnpm
+          pnpm prisma generate
+          pnpm prisma migrate deploy
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
