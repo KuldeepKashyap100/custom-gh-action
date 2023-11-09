@@ -85,3 +85,4 @@ Let's deploy the Next.js application to [Vercel](https://vercel.com/). If you ha
 ## References
 
 The stack originates from [create-t3-app](https://github.com/t3-oss/create-t3-app) and [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo).
+
