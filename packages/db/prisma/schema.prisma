@@ -12,7 +12,6 @@ datasource db {
 
 model TestEmployee {
   id         Int   @id @default(autoincrement())
-  orgId      String   @map("org_id")
   archivedAt DateTime @default(dbgenerated("'9999-12-31 23:59:59.999'::timestamp without time zone")) @map("archived_at")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @default(now()) @updatedAt @map("updated_at")

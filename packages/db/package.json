@@ -10,7 +10,9 @@
     "db:push": "npx prisma db push --skip-generate",
     "dev": "npx prisma studio --port 5556",
     "migrate:create": "prisma migrate dev --create-only",
-    "migrate:reset": "prisma migrate reset"
+    "migrate:reset": "prisma migrate reset",
+    "migrate:dev": "prisma migrate dev",
+    "deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0"
