@@ -32,7 +32,7 @@ jobs:
           touch .env
           echo DATABASE_URL=${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb >> .env
           echo DIRECT_DATABASE_URL=${{ steps.create_branch.outputs.db_url}}/neondb >> .env
-          pnpm prisma generate
+          pnpm prisma generate --schema='./packages/db/prisma/schema.prisma'
           pnpm prisma migrate deploy
 
       - name: Install Vercel CLI
