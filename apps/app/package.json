@@ -15,7 +15,6 @@
   "dependencies": {
     "@design-system/react": "*",
     "@myapp/api": "*",
-    "@myapp/auth": "*",
     "@myapp/db": "*",
     "@myapp/tailwind-config": "*",
     "@myapp/utils": "*",
