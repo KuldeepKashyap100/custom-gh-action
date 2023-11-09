@@ -8,7 +8,9 @@
     "clean": "rm -rf .turbo node_modules",
     "db:generate": "npx prisma generate",
     "db:push": "npx prisma db push --skip-generate",
-    "dev": "npx prisma studio --port 5556"
+    "dev": "npx prisma studio --port 5556",
+    "migrate:create": "prisma migrate dev --create-only",
+    "migrate:reset": "prisma migrate reset"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0"
