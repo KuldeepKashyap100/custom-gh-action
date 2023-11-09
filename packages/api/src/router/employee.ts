@@ -18,7 +18,6 @@ export const employeeRouter = createTRPCRouter({
       return ctx.prisma.testEmployee.create({
         data: {
           ...input,
-          orgId: "123",
           internalId: uuidv4(),
         },
       });

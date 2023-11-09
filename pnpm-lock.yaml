@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -53,9 +53,6 @@ importers:
       '@myapp/api':
         specifier: '*'
         version: link:../../packages/api
-      '@myapp/auth':
-        specifier: '*'
-        version: link:../../packages/auth
       '@myapp/db':
         specifier: '*'
         version: link:../../packages/db
@@ -138,9 +135,6 @@ importers:
 
   packages/api:
     dependencies:
-      '@myapp/auth':
-        specifier: '*'
-        version: link:../auth
       '@myapp/db':
         specifier: '*'
         version: link:../db
@@ -150,46 +144,18 @@ importers:
       '@trpc/server':
         specifier: ^10.14.0
         version: 10.14.0
+      '@types/uuid':
+        specifier: ^9.0.7
+        version: 9.0.7
       superjson:
         specifier: 1.9.1
         version: 1.9.1
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
       zod:
         specifier: ^3.20.6
         version: 3.20.6
-    devDependencies:
-      '@myapp/eslint-config':
-        specifier: '*'
-        version: link:../config/eslint
-      '@myapp/tsconfig':
-        specifier: '*'
-        version: link:../config/tsconfig
-      eslint:
-        specifier: ^8.34.0
-        version: 8.34.0
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-
-  packages/auth:
-    dependencies:
-      '@myapp/db':
-        specifier: '*'
-        version: link:../db
-      '@next-auth/prisma-adapter':
-        specifier: ^1.0.5
-        version: 1.0.5(@prisma/client@4.11.0)(next-auth@4.20.1)
-      next:
-        specifier: ^13.2.3
-        version: 13.2.3(@babel/core@7.22.1)(react-dom@18.2.0)(react@18.2.0)
-      next-auth:
-        specifier: ^4.20.1
-        version: 4.20.1(next@13.2.3)(react-dom@18.2.0)(react@18.2.0)
-      react:
-        specifier: 18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: 18.2.0
-        version: 18.2.0(react@18.2.0)
     devDependencies:
       '@myapp/eslint-config':
         specifier: '*'
@@ -922,16 +888,6 @@ packages:
       read-yaml-file: 1.1.0
     dev: false
 
-  /@next-auth/prisma-adapter@1.0.5(@prisma/client@4.11.0)(next-auth@4.20.1):
-    resolution: {integrity: sha512-VqMS11IxPXrPGXw6Oul6jcyS/n8GLOWzRMrPr3EMdtD6eOalM6zz05j08PcNiis8QzkfuYnCv49OvufTuaEwYQ==}
-    peerDependencies:
-      '@prisma/client': '>=2.26.0 || >=3'
-      next-auth: ^4
-    dependencies:
-      '@prisma/client': 4.11.0(prisma@4.11.0)
-      next-auth: 4.20.1(next@13.2.3)(react-dom@18.2.0)(react@18.2.0)
-    dev: false
-
   /@next/env@13.2.3:
     resolution: {integrity: sha512-FN50r/E+b8wuqyRjmGaqvqNDuWBWYWQiigfZ50KnSFH0f+AMQQyaZl+Zm2+CIpKk0fL9QxhLxOpTVA3xFHgFow==}
     dev: false
@@ -1282,6 +1238,10 @@ packages:
 
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
+    dev: false
+
+  /@types/uuid@9.0.7:
+    resolution: {integrity: sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==}
     dev: false
 
   /@typescript-eslint/eslint-plugin@5.49.0(@typescript-eslint/parser@5.49.0)(eslint@8.34.0)(typescript@4.9.5):
@@ -4548,6 +4508,11 @@ packages:
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
+    dev: false
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
     dev: false
 
