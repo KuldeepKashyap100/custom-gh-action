@@ -3,19 +3,16 @@ import "~/styles/globals.css";
 import "@design-system/react/styles.css";
 import type { AppType } from "next/app";
 import { Inter } from "@next/font/google";
-import type { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
 
 import { MainLayout } from "~/components/Layout";
 import { api } from "~/services/api";
 
 const inter = Inter({ subsets: ["latin"] });
 
-type MyAppType = AppType<{ session: Session | null }>;
+type MyAppType = AppType;
 
 const MyApp: MyAppType = ({
   Component,
-  pageProps: { session, ...pageProps },
 }) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -23,13 +20,11 @@ const MyApp: MyAppType = ({
   const Layout = Component.layout || MainLayout;
 
   return (
-    <SessionProvider session={session}>
       <div className={inter.className}>
         <Layout>
-          <Component {...pageProps} />
+          <Component />
         </Layout>
       </div>
-    </SessionProvider>
   );
 };
 
