@@ -29,11 +29,12 @@ jobs:
 
       - name: Run Prisma Migrate
         run: |
+          cd packages/db/prisma
           touch .env
           echo DATABASE_URL=${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb >> .env
           echo DIRECT_DATABASE_URL=${{ steps.create_branch.outputs.db_url}}/neondb >> .env
-          npx prisma generate --schema='./packages/db/prisma/schema.prisma'
-          npx prisma migrate deploy --schema='./packages/db/prisma/schema.prisma'
+          npx prisma generate
+          npx prisma migrate deploy
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
