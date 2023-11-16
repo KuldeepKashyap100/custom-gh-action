@@ -50,7 +50,7 @@ jobs:
       - name: Add environment variables to Vercel
         run: |
           branch_name="${{ github.head_ref }}"
-          token="${{ secrets.VERCEL_TOKEN }}""
+          token="${{ secrets.VERCEL_TOKEN }}"
           database_url="${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb"
           direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
           vercel dns ls --token=${{ secrets.VERCEL_TOKEN }}
