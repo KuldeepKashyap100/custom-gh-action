@@ -53,7 +53,7 @@ jobs:
           environment_variables=("DATABASE_URL=$database_url" "DIRECT_DATABASE_URL=$direct_database_url")
           for variable_value in "${environment_variables[@]}"; do
             IFS="=" read -r variable value <<< "$variable_value"
-            if ! vercel env ls preview  -t $token | grep -q "$variable.*preview"; then
+            if ! vercel env ls preview $branch_name -t $token | grep -q "$variable.*preview"; then
                 echo $value | vercel env add $variable preview $branch_name -t $token
             fi
           done
