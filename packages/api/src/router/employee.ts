@@ -3,11 +3,11 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-console.log("kkkk::::", process.env.DATABASE_URL);
+console.log("build kkkkk::::", process.env.DATABASE_URL);
 
 export const employeeRouter = createTRPCRouter({
   all: publicProcedure.query(({ ctx }) => {
-    console.log("kkkk::::", process.env.DATABASE_URL);
+    console.log("run kkkk::::", process.env.DATABASE_URL);
     return ctx.prisma.testEmployee.findMany({ orderBy: { id: "desc" } });
   }),
   create: publicProcedure
