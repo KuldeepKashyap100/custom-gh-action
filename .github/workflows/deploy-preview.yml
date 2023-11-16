@@ -50,8 +50,10 @@ jobs:
       - name: Add environment variables to Vercel
         run: |
           branch_name="${{ github.head_ref }}"
-          vercel env add DATABASE_URL '${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb' preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
-          vercel env add DIRECT_DATABASE_URL '${{ steps.create_branch.outputs.db_url}}/neondb' preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
+          database_url="${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb"
+          direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
+          vercel env add DATABASE_URL "$database_url" preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
+          vercel env add DIRECT_DATABASE_URL "$direct_database_url" preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Preview to Vercel
         id: deploy
@@ -63,5 +65,3 @@ jobs:
           message: |
             Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
             Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}
-
-            
