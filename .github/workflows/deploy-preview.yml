@@ -47,11 +47,18 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
+      - name: Add environment variables to Vercel
+        run: |
+          # Get the branch name from the GitHub context
+          branch_name="${{ github.head_ref }}"
+          
+          # Set environment variables in Vercel based on the branch name
+          vercel env add DATABASE_URL '${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb' $branch_name
+          vercel env add DIRECT_DATABASE_URL '${{ steps.create_branch.outputs.db_url}}/neondb' $branch_name
+
       - name: Deploy Preview to Vercel
         id: deploy
-        run: |
-          echo -n database_url=${{steps.create_branch.outputs.db_url}}
-          echo preview_url=$(vercel deploy --build-env DATABASE_URL=${{steps.create_branch.outputs.db_url}} --prebuilt --token=${{ secrets.VERCEL_TOKEN }}) >> $GITHUB_OUTPUT
+        run: echo preview_url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}) >> $GITHUB_OUTPUT
 
       - name: Comment on Pull Request
         uses: thollander/actions-comment-pull-request@v2
