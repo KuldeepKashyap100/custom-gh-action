@@ -64,7 +64,7 @@ jobs:
 
       - name: Build Project Artifacts
         run: |
-          vercel env ls -t $token
+          vercel env ls --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Preview to Vercel
