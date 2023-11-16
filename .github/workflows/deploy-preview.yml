@@ -48,8 +48,8 @@ jobs:
         run: |
           branch_name="${{ github.head_ref }}"
           token="${{ secrets.VERCEL_TOKEN }}"
-          database_url="${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb"
-          direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
+          database_url=$(echo "${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb" | tr -d '[:space:]')
+          direct_database_url=$(echo "${{ steps.create_branch.outputs.db_url}}/neondb" | tr -d '[:space:]')
           environment_variables=("DATABASE_URL=$database_url" "DIRECT_DATABASE_URL=$direct_database_url")
           for variable_value in "${environment_variables[@]}"; do
             IFS="=" read -r variable value <<< "$variable_value"
