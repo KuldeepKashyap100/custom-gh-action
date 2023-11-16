@@ -52,8 +52,8 @@ jobs:
           branch_name="${{ github.head_ref }}"
           database_url="${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb"
           direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
-          vercel env add DATABASE_URL "$database_url" preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
-          vercel env add DIRECT_DATABASE_URL "$direct_database_url" preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
+          vercel env add "DATABASE_URL_${branch_name}" "$database_url" preview --token=${{ secrets.VERCEL_TOKEN }}
+          vercel env add "DIRECT_DATABASE_URL_${branch_name}" "$direct_database_url" preview --token=${{ secrets.VERCEL_TOKEN }}    
 
       - name: Deploy Preview to Vercel
         id: deploy
