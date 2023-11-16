@@ -55,8 +55,7 @@ jobs:
           echo $DATABASE_URL
           echo $DIRECT_DATABASE_URL
 
-          vercel env add $DATABASE_URL preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
-          vercel env add $DIRECT_DATABASE_URL preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
+          echo $DATABASE_URL | vercel env add DATABASE_URL preview $branch_name --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Preview to Vercel
         id: deploy
