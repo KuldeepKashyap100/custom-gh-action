@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const employeeRouter = createTRPCRouter({
   all: publicProcedure.query(({ ctx }) => {
-    console.log("kkkk::::", process.env.DATABASE_URL);
+    console.log("kkkk::::", process.env);
     return ctx.prisma.testEmployee.findMany({ orderBy: { id: "desc" } });
   }),
   create: publicProcedure
