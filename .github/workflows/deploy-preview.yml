@@ -50,8 +50,12 @@ jobs:
           token="${{ secrets.VERCEL_TOKEN }}"
           database_url="${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb"
           direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
-          # vercel env rm DATABASE_URL preview -y -t $token
-          # vercel env rm DIRECT_DATABASE_URL preview -y -t $token
+          variables_to_remove=("DATABASE_URL" "DIRECT_DATABASE_URL")
+          for variable in "${variables_to_remove[@]}"; do
+              if vercel env ls --json -t $token | jq -r '.[] | select(.key == "'"$variable"'" and .target == "preview")' >/dev/null; then
+                  vercel env rm "$variable" preview -y -t $token
+              fi
+          done
           echo $database_url | vercel env update DATABASE_URL preview $branch_name -t $token
           echo $direct_database_url | vercel env update DIRECT_DATABASE_URL preview $branch_name -t $token
 
