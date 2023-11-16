@@ -51,10 +51,10 @@ jobs:
         run: |
           # Get the branch name from the GitHub context
           branch_name="${{ github.head_ref }}"
-          
+
           # Set environment variables in Vercel based on the branch name
-          vercel env add DATABASE_URL '${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb' $branch_name
-          vercel env add DIRECT_DATABASE_URL '${{ steps.create_branch.outputs.db_url}}/neondb' $branch_name
+          vercel env add DATABASE_URL '${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb' $branch_name --token=${{ secrets.VERCEL_TOKEN }}
+          vercel env add DIRECT_DATABASE_URL '${{ steps.create_branch.outputs.db_url}}/neondb' $branch_name --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Preview to Vercel
         id: deploy
