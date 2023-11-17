@@ -6,7 +6,7 @@ on:
       - "main"
 
 jobs:
-  deploy-main:
+  deploy_main:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
