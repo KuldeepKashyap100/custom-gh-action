@@ -2,6 +2,8 @@ name: Pull Request Closed
 
 on:
   pull_request:
+    branches-ignore:
+      - "live"
     types:
       - closed
 
