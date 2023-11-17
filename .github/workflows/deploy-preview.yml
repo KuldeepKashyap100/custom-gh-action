@@ -44,8 +44,23 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      # TODO: delete this block
+      - name: Delete Preview Environments
+        run: |
+          token="${{ secrets.VERCEL_TOKEN }}"
+          pull_request_id="${{ steps.get_sha.outputs.sha }}"
+
+          environments=$(vercel list -m pullRequestId=$pull_request_id -t $token)
+          echo "$environments"
+
+          # Iterate over the environments and delete them
+          while read -r line; do
+            alias=$(echo "$line" | jq -r '.alias')
+            vercel remove "$alias" -t $token
+          done <<< "$environments"
+
+      # - name: Build Project Artifacts
+      #   run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       # - name: Deploy Preview to Vercel
       #   id: deploy
