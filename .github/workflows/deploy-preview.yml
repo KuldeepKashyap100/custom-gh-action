@@ -50,12 +50,12 @@ jobs:
           token="${{ secrets.VERCEL_TOKEN }}"
           pull_request_id="${{ steps.get_sha.outputs.sha }}"
 
-          environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token)
+          environments=$(vercel list -m "pullRequestId=a535c892" -t $token)
           echo "Environments to delete: $environments"
 
           for env in $environments; do
             echo "Removing environment: $env"
-            vercel remove "$env" -t $token
+            vercel remove "$env" -t $token -y
           done
 
       # - name: Build Project Artifacts
