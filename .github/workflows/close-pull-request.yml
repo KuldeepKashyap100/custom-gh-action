@@ -6,7 +6,7 @@ on:
       - closed
 
 jobs:
-  clean-up:
+  clean_up:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:

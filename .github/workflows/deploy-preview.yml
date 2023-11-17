@@ -3,7 +3,7 @@ name: Deploy Preview
 on: [pull_request]
 
 jobs:
-  deploy-preview:
+  deploy_preview:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
