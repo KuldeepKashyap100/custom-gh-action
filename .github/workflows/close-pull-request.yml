@@ -2,6 +2,9 @@ name: Pull Request Closed
 
 on:
   pull_request:
+    branches-ignore:
+      - "main"
+      - "live"
     types:
       - closed
 
@@ -45,7 +48,10 @@ jobs:
       - name: Delete Preview Environments
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
-          pull_request_id=${{ steps.get_sha.outputs.sha }}
-          for env in $(vercel list -m pullRequestId=$pull_request_id -t $token --output json | jq -r '.[] | .alias'); do
-            vercel remove "${env}" -t $token
+          pull_request_id="${{ steps.get_sha.outputs.sha }}"
+          environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token)
+          echo "Environments to delete: $environments"
+          for env in $environments; do
+            echo "Removing environment: $env"
+            vercel remove "$env" -t $token -y
           done
