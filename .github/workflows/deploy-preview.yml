@@ -44,42 +44,28 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
-      # TODO: delete this block
-      - name: Delete Preview Environments
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Preview to Vercel
+        id: deploy
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
-          pull_request_id="${{ steps.get_sha.outputs.sha }}"
+          pull_request_id=${{ steps.get_pull_request_sha.outputs.pull_request_sha }}
+          database_url="${{ steps.create_branch.outputs.db_url_with_pooler }}/neondb"
+          direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
+          echo preview_url=$(
+            vercel deploy \
+              --prebuilt \
+              --env DATABASE_URL=$database_url \
+              --env DIRECT_DATABASE_URL=$direct_database_url \
+              --meta pullRequestId=$pull_request_id \
+              -t $token
+          ) >> $GITHUB_OUTPUT
 
-          environments=$(vercel list -m "pullRequestId=a535c892" -t $token)
-          echo "Environments to delete: $environments"
-
-          for env in $environments; do
-            echo "Removing environment: $env"
-            vercel remove "$env" -t $token -y
-          done
-
-      # - name: Build Project Artifacts
-      #   run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-
-      # - name: Deploy Preview to Vercel
-      #   id: deploy
-      #   run: |
-      #     token="${{ secrets.VERCEL_TOKEN }}"
-      #     pull_request_id=${{ steps.get_pull_request_sha.outputs.pull_request_sha }}
-      #     database_url="${{ steps.create_branch.outputs.db_url_with_pooler }}/neondb"
-      #     direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
-      #     echo preview_url=$(
-      #       vercel deploy \
-      #         --prebuilt \
-      #         --env DATABASE_URL=$database_url \
-      #         --env DIRECT_DATABASE_URL=$direct_database_url \
-      #         --meta pullRequestId=$pull_request_id \
-      #         -t $token
-      #     ) >> $GITHUB_OUTPUT
-
-      # - name: Comment on Pull Request
-      #   uses: thollander/actions-comment-pull-request@v2
-      #   with:
-      #     message: |
-      #       Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
-      #       Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}
+      - name: Comment on Pull Request
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
+            Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}

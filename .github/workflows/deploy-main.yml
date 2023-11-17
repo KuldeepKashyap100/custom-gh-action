@@ -50,22 +50,22 @@ jobs:
         # TODO: change env to preview
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-      # - name: Build Project Artifacts
-      #   # TODO: remove prod flag
-      #   run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        # TODO: remove prod flag
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-      # - name: Deploy Preview to Vercel
-      #   id: deploy
-      #   run: |
-      #     token="${{ secrets.VERCEL_TOKEN }}"
-      #     database_url="${{ secrets.DATABASE_URL}}"
-      #     direct_database_url="${{ secrets.DIRECT_DATABASE_URL}}"
-      #     echo preview_url=$(
-      #       vercel deploy \
-      #         --prebuilt \
-      #         # TODO: remove prod flag
-      #         --prod \
-      #         --env DATABASE_URL=$database_url \
-      #         --env DIRECT_DATABASE_URL=$direct_database_url \
-      #         -t $token
-      #     ) >> $GITHUB_OUTPUT
+      - name: Deploy Preview to Vercel
+        id: deploy
+        run: |
+          token="${{ secrets.VERCEL_TOKEN }}"
+          database_url="${{ secrets.DATABASE_URL}}"
+          direct_database_url="${{ secrets.DIRECT_DATABASE_URL}}"
+          echo preview_url=$(
+            vercel deploy \
+              --prebuilt \
+              # TODO: remove prod flag
+              --prod \
+              --env DATABASE_URL=$database_url \
+              --env DIRECT_DATABASE_URL=$direct_database_url \
+              -t $token
+          ) >> $GITHUB_OUTPUT
