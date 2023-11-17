@@ -42,8 +42,8 @@ jobs:
 
       - name: Delete Preview Environments
         run: |
+          token="${{ secrets.VERCEL_TOKEN }}"
           pull_request_id=${{ steps.get_sha.outputs.sha }}
-          for env in $(vercel list -m pullRequestId=$pull_request_id --json | jq -r '.[] | .alias'); do
-            vercel remove "${env}"
+          for env in $(vercel list -m pullRequestId=$pull_request_id -t $token --json | jq -r '.[] | .alias'); do
+            vercel remove "${env}" -t $token
           done
-
