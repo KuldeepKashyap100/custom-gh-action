@@ -46,6 +46,6 @@ jobs:
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
           pull_request_id=${{ steps.get_sha.outputs.sha }}
-          for env in $(vercel list -m pullRequestId=$pull_request_id -t $token --json | jq -r '.[] | .alias'); do
+          for env in $(vercel list -m pullRequestId=$pull_request_id -t $token --output json | jq -r '.[] | .alias'); do
             vercel remove "${env}" -t $token
           done
