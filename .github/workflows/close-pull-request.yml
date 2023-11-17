@@ -48,7 +48,7 @@ jobs:
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
           pull_request_id="${{ steps.get_sha.outputs.sha }}"
-          environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token)
+          environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token -y)
           echo "Environments to delete: $environments"
           for env in $environments; do
             echo "Removing environment: $env"
