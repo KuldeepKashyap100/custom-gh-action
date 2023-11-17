@@ -44,26 +44,24 @@ jobs:
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Add environment variables to Vercel
-        run: |
-          branch_name="${{ github.head_ref }}"
-          token="${{ secrets.VERCEL_TOKEN }}"
-          database_url=$(echo "${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb" | tr -d '[:space:]')
-          direct_database_url=$(echo "${{ steps.create_branch.outputs.db_url}}/neondb" | tr -d '[:space:]')
-          environment_variables=("DATABASE_URL=$database_url" "DIRECT_DATABASE_URL=$direct_database_url")
-          for variable_value in "${environment_variables[@]}"; do
-            IFS="=" read -r variable value <<< "$variable_value"
-            if ! vercel env ls -t $token | grep -q "$variable.*preview"; then
-                echo $value | vercel env add $variable preview $branch_name -t $token
-            fi
-          done
-
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Preview to Vercel
         id: deploy
-        run: echo preview_url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}) >> $GITHUB_OUTPUT
+        run: |
+          token="${{ secrets.VERCEL_TOKEN }}"
+          pull_request_id=${{ steps.get_pull_request_sha.outputs.pull_request_sha }}
+          database_url="${{ steps.create_branch.outputs.db_url_with_pooler }}/neondb"
+          direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
+          echo preview_url=$(
+            vercel deploy \
+              --prebuilt \
+              --env DATABASE_URL=$database_url \
+              --env DIRECT_DATABASE_URL=$direct_database_url \
+              --meta pullRequestId=$pull_request_id \
+              -t $token
+          ) >> $GITHUB_OUTPUT
 
       - name: Comment on Pull Request
         uses: thollander/actions-comment-pull-request@v2
