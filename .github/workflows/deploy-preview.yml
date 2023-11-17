@@ -51,6 +51,7 @@ jobs:
           pull_request_id="${{ steps.get_sha.outputs.sha }}"
 
           environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token --json | jq -r '.[] | select(.target == "preview") | .alias')
+          echo "Environments to delete: $environments"
 
           for env in $environments; do
             echo "Removing environment: $env"
