@@ -4,9 +4,20 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
 export const employeeRouter = createTRPCRouter({
-  all: publicProcedure.query(({ ctx }) => {
-    console.log("run kkkk::::", process.env.DATABASE_URL);
-    return ctx.prisma.testEmployee.findMany({ orderBy: { id: "desc" } });
+  all: publicProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+    let start, end;
+
+    start = performance.now();
+    await prisma.$executeRaw`SELECT 1;`;
+    end = performance.now();
+    console.log(`connection check query took::: ${end - start}ms`);
+
+    start = performance.now();
+    const result = await prisma.testEmployee.findMany({ orderBy: { id: "desc" } });
+    end = performance.now();
+    console.log(`findMany employees took::: ${end - start}ms`);
+    return result;
   }),
   create: publicProcedure
     .input(
