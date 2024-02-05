@@ -15,7 +15,9 @@
     "deploy": "prisma migrate deploy"
   },
   "dependencies": {
-    "@prisma/client": "^4.11.0"
+    "@prisma/client": "^4.11.0",
+    "@types/pg": "^8.11.0",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "@myapp/tsconfig": "*",

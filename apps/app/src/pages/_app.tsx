@@ -6,7 +6,6 @@ import { Inter } from "@next/font/google";
 
 import { MainLayout } from "~/components/Layout";
 import { api } from "~/services/api";
-import Head from "next/head";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
