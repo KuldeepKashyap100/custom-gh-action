@@ -14,59 +14,63 @@ jobs:
       - name: Get PR branch name
         id: get_pr_branch_name
         run: |
+          ref_name=${GITHUB_REF#refs/*/}
+          echo "ref_name=${ref_name}" >> $GITHUB_OUTPUT
+          echo $ref_name
+
           pr_branch_name=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
           echo "pr_branch_name=${pr_branch_name}" >> $GITHUB_OUTPUT
           echo $pr_branch_name
 
-      - name: Neon Database Create Branch Action
-        uses: neondatabase/create-branch-action@v3
-        id: create_branch
-        with:
-          project_id: ${{ secrets.NEON_PROJECT_ID }}
-          branch_name: ${{ steps.get_pr_branch_name.outputs.pr_branch_name }}
-          api_key: ${{ secrets.NEON_API_KEY }}
-          username: ${{ secrets.PG_USERNAME }}
-          password: ${{ secrets.PG_PASSWORD }}
+      # - name: Neon Database Create Branch Action
+      #   uses: neondatabase/create-branch-action@v3
+      #   id: create_branch
+      #   with:
+      #     project_id: ${{ secrets.NEON_PROJECT_ID }}
+      #     branch_name: ${{ steps.get_pr_branch_name.outputs.pr_branch_name }}
+      #     api_key: ${{ secrets.NEON_API_KEY }}
+      #     username: ${{ secrets.PG_USERNAME }}
+      #     password: ${{ secrets.PG_PASSWORD }}
 
-      - name: Run Prisma Migrate
-        run: |
-          cd packages/db
-          touch .env
-          echo DATABASE_URL=${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb >> .env
-          echo DIRECT_DATABASE_URL=${{ steps.create_branch.outputs.db_url}}/neondb >> .env
-          npm i -g pnpm
-          pnpm i
-          pnpm prisma generate
-          pnpm prisma migrate deploy
+      # - name: Run Prisma Migrate
+      #   run: |
+      #     cd packages/db
+      #     touch .env
+      #     echo DATABASE_URL=${{ steps.create_branch.outputs.db_url_with_pooler}}/neondb >> .env
+      #     echo DIRECT_DATABASE_URL=${{ steps.create_branch.outputs.db_url}}/neondb >> .env
+      #     npm i -g pnpm
+      #     pnpm i
+      #     pnpm prisma generate
+      #     pnpm prisma migrate deploy
 
-      - name: Install Vercel CLI
-        run: npm install --global vercel@latest
+      # - name: Install Vercel CLI
+      #   run: npm install --global vercel@latest
 
-      - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      # - name: Pull Vercel Environment Information
+      #   run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      # - name: Build Project Artifacts
+      #   run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
 
-      - name: Deploy Preview to Vercel
-        id: deploy
-        run: |
-          token="${{ secrets.VERCEL_TOKEN }}"
-          pull_request_id=${{ steps.get_pr_branch_name.outputs.pr_branch_name }}
-          database_url="${{ steps.create_branch.outputs.db_url_with_pooler }}/neondb"
-          direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
-          echo preview_url=$(
-            vercel deploy \
-              --prebuilt \
-              --env DATABASE_URL=$database_url \
-              --env DIRECT_DATABASE_URL=$direct_database_url \
-              --meta pullRequestId=$pull_request_id \
-              -t $token
-          ) >> $GITHUB_OUTPUT
+      # - name: Deploy Preview to Vercel
+      #   id: deploy
+      #   run: |
+      #     token="${{ secrets.VERCEL_TOKEN }}"
+      #     pull_request_id=${{ steps.get_pr_branch_name.outputs.pr_branch_name }}
+      #     database_url="${{ steps.create_branch.outputs.db_url_with_pooler }}/neondb"
+      #     direct_database_url="${{ steps.create_branch.outputs.db_url}}/neondb"
+      #     echo preview_url=$(
+      #       vercel deploy \
+      #         --prebuilt \
+      #         --env DATABASE_URL=$database_url \
+      #         --env DIRECT_DATABASE_URL=$direct_database_url \
+      #         --meta pullRequestId=$pull_request_id \
+      #         -t $token
+      #     ) >> $GITHUB_OUTPUT
 
-      - name: Comment on Pull Request
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
-            Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}
+      # - name: Comment on Pull Request
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     message: |
+      #       Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
+      #       Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}
