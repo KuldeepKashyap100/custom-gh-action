@@ -51,25 +51,10 @@ jobs:
 
           vercel link -t $token -y
           
-          environments=$(vercel env ls preview $branch_name -t $token -y --json)
+          environments=$(vercel env ls preview $branch_name -t $token -y | awk '{for(i=1;i<=NF;i++) if($i ~ /^[A-Z_]+$/) print $i}')
           echo "Environment vars to delete: $environments"
 
           for env in $environments; do
             echo "Removing environment: $env"
             vercel env rm "$env" preview $branch_name -t $token -y
           done
-
-          # echo "Listing environment variables for preview environment and branch: $branch_name"
-          # environments=$(vercel env ls preview $branch_name -t $token -y | awk -v branch="$branch_name" '$4=="Preview" && $5=="("branch")" {print $1}')
-          # echo "Environment vars to delete: $environments"
-      
-          # # Check if environments variable is empty or not
-          # if [ -z "$environments" ]; then
-          #   echo "No environment variables found to delete."
-          # else
-          #   for env_name in $environments; do
-          #     echo "Removing environment variable: $env_name"
-          #     # Delete environment variable by name
-          #     vercel env rm "$env_name" --environment=preview --git-branch="$branch_name" -t $token -y
-          #   done
-          # fi
