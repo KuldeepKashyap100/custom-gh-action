@@ -21,7 +21,7 @@ jobs:
           pr_branch_name=${GITHUB_REF#refs/*/}
           echo "pr_branch_name=${pr_branch_name}" >> $GITHUB_OUTPUT
           echo $pr_branch_name
-
+      
       - name: Search branch by name
         id: get_branch_id
         run: |
@@ -48,12 +48,12 @@ jobs:
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
           branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
+          vercel link -t $token -y
 
-          # Use --project or -P to specify the project name
-          environments=$(vercel env ls --environment=preview --git-branch="$branch_name" --project="custom-gh-action" -t "$token" -y)
+          environments=$(vercel env ls --environment=preview --git-branch=$branch_name -t $token -y)
           echo "Environment vars to delete: $environments"
 
-          echo "$environments" | jq -r '.[].id' | while read -r env_id; do
-            echo "Removing environment ID: $env_id"
-            vercel env rm "$env_id" --environment=preview --git-branch="$branch_name" --project="custom-gh-action" -t "$token" -y
+          for env in $environments; do
+            echo "Removing environment: $env"
+            vercel env rm "$env" --environment=preview --git-branch=$branch_name -t $token -y
           done
