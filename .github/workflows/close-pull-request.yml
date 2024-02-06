@@ -49,11 +49,12 @@ jobs:
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
           branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
+          project_name="custom-gh-action"
 
-          environments=$(vercel env ls preview $branch_name -t $token -y)
+          environments=$(vercel env ls preview $branch_name --project=$project_name -t $token -y)
           echo "Environment vars to delete: $environments"
 
           for env in $environments; do
             echo "Removing environment: $env"
-            vercel env rm "$env" preview $branch_name -t $token -y
+            vercel env rm "$env" preview $branch_name --project=$project_name -t $token -y
           done
