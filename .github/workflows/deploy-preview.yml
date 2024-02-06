@@ -1,6 +1,6 @@
 name: Deploy Preview
 
-on: [pull_request]
+on: []
 
 jobs:
   deploy_preview:
