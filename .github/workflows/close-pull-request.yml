@@ -49,24 +49,19 @@ jobs:
           token="${{ secrets.VERCEL_TOKEN }}"
           branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
 
-          # Link the project to get the project ID
           vercel link -t $token -y
 
-          # List environment variables in JSON format and use awk to filter out non-JSON lines
           echo "Listing environment variables for preview environment and branch: $branch_name"
-          environments=$(vercel env ls --environment=preview --git-branch="$branch_name" -t $token --json | awk '/^\[.*\]$/ {print}')
+          environments=$(vercel env ls -t $token | awk -v branch="$branch_name" '$4=="Preview" && $5=="("branch")" {print $1}')
           echo "Environment vars to delete: $environments"
 
           # Check if environments variable is empty or not
           if [ -z "$environments" ]; then
             echo "No environment variables found to delete."
           else
-            # Parse the JSON output to get environment variable IDs
-            env_ids=$(echo "$environments" | jq -r '.[].id')
-
-            for env_id in $env_ids; do
-              echo "Removing environment variable ID: $env_id"
-              # Delete environment variable by ID
-              vercel env rm "$env_id" --environment=preview --git-branch="$branch_name" -t $token -y
+            for env_name in $environments; do
+              echo "Removing environment variable: $env_name"
+              # Delete environment variable by name
+              vercel env rm "$env_name" --environment=preview --git-branch="$branch_name" -t $token -y
             done
           fi
