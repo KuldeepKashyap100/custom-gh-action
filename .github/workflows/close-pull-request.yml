@@ -54,11 +54,15 @@ jobs:
           environments=$(vercel env ls preview $branch_name -t $token -y)
           echo "Environment vars to delete: $environments"
           
-          # Parse the JSON output to get environment variable names
-          env_names=$(echo "$environments" | jq -r '.[].key')
+          if [ -z "$environments" ]; then
+            echo "No environment variables found to delete."
+          else
+            # Parse the JSON output to get environment variable IDs
+            env_ids=$(echo "$environments" | jq -r '.[].id')
 
-          for env_name in $env_names; do
-            echo "Removing environment variable: $env_name"
-            # Delete environment variable by name
-            vercel env rm "$env_name" --environment=preview --git-branch="$branch_name" -t $token -y
-          done
+            for env_id in $env_ids; do
+              echo "Removing environment variable ID: $env_id"
+              # Delete environment variable by ID
+              vercel env rm "$env_id" --environment=preview --git-branch="$branch_name" -t $token -y
+            done
+          fi
