@@ -32,7 +32,7 @@ jobs:
             --header "Content-Type: application/json" \
             --header "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
             | jq -r .branches \
-            | jq -c '.[] | select(.name | contains("'${{ steps.get_pr_branch_name.outputs.branch_name }}'")) .id' \
+            | jq -c '.[] | select(.name | contains("'${{ steps.get_pr_branch_name.outputs.pr_branch_name }}'")) .id' \
             | jq -r \
             ) \
             
