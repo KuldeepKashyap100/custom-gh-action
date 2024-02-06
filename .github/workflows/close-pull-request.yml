@@ -49,11 +49,15 @@ jobs:
           token="${{ secrets.VERCEL_TOKEN }}"
           branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
 
+          # Link the project to get the project ID
           vercel link -t $token -y
-          echo "vercel env ls preview $branch_name -t $token -y"
-          environments=$(vercel env ls preview $branch_name -t $token -y)
+
+          # List environment variables in JSON format and use awk to filter out non-JSON lines
+          echo "Listing environment variables for preview environment and branch: $branch_name"
+          environments=$(vercel env ls --environment=preview --git-branch="$branch_name" -t $token --json | awk '/^\[.*\]$/ {print}')
           echo "Environment vars to delete: $environments"
-          
+
+          # Check if environments variable is empty or not
           if [ -z "$environments" ]; then
             echo "No environment variables found to delete."
           else
