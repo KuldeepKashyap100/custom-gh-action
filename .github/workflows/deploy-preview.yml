@@ -19,14 +19,13 @@ jobs:
           echo $pr_branch_name
 
       - name: Neon Database Create Branch Action
-        uses: neondatabase/create-branch-action@v3
+        uses: neondatabase/create-branch-action@v4
         id: create_branch
         with:
           project_id: ${{ secrets.NEON_PROJECT_ID }}
           branch_name: ${{ steps.get_pr_branch_name.outputs.pr_branch_name }}
           api_key: ${{ secrets.NEON_API_KEY }}
           username: ${{ secrets.PG_USERNAME }}
-          password: ${{ secrets.PG_PASSWORD }}
 
       - name: Run Prisma Migrate
         run: |
@@ -64,9 +63,10 @@ jobs:
               -t $token
           ) >> $GITHUB_OUTPUT
 
-      - name: Comment on Pull Request
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          message: |
-            Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
-            Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}
+      # TODO: Remove this step, from now this workflow will be triggred by worflow_dispatch
+      # - name: Comment on Pull Request
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     message: |
+      #       Vercel Preview URL :rocket: : ${{ steps.deploy.outputs.preview_url }}
+      #       Neon branch :elephant: : https://console.neon.tech/app/projects/${{ secrets.NEON_PROJECT_ID }}/branches/${{ steps.create_branch.outputs.branch_id }}
