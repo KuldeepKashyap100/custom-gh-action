@@ -50,11 +50,19 @@ jobs:
           branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
 
           vercel link -t $token -y
+          
+          # environments=$(vercel env ls preview $branch_name -t $token -y)
+          # echo "Environment vars to delete: $environments"
+
+          # for env in $environments; do
+          #   echo "Removing environment: $env"
+          #   vercel env rm "$env" preview $branch_name -t $token -y
+          # done
 
           echo "Listing environment variables for preview environment and branch: $branch_name"
-          environments=$(vercel env ls -t $token | awk -v branch="$branch_name" '$4=="Preview" && $5=="("branch")" {print $1}')
+          environments=$(vercel env ls preview $branch_name -t $token -y | awk -v branch="$branch_name" '$4=="Preview" && $5=="("branch")" {print $1}')
           echo "Environment vars to delete: $environments"
-
+      
           # Check if environments variable is empty or not
           if [ -z "$environments" ]; then
             echo "No environment variables found to delete."
