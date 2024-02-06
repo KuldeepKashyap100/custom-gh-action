@@ -15,12 +15,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get last commit SHA
-        id: get_pull_request_sha
+      - name: Get PR branch name
+        id: get_pr_branch_name
         run: |
-          pull_request_sha=$(jq --raw-output .pull_request.base.sha "$GITHUB_EVENT_PATH" | cut -c1-8)
-          echo "pull_request_sha=${pull_request_sha}" >> $GITHUB_OUTPUT
-          echo $pull_request_sha
+            branch_name=${GITHUB_REF#refs/heads/}
+            echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
+            echo $branch_name
 
       - name: Search branch by name
         id: get_branch_id
@@ -31,7 +31,7 @@ jobs:
             --header "Content-Type: application/json" \
             --header "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
             | jq -r .branches \
-            | jq -c '.[] | select(.name | contains("'${{ steps.get_pull_request_sha.outputs.pull_request_sha }}'")) .id' \
+            | jq -c '.[] | select(.name | contains("'${{ steps.get_pr_branch_name.outputs.branch_name }}'")) .id' \
             | jq -r \
             ) \
             
