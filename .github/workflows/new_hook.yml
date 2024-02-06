@@ -1,0 +1,17 @@
+name: clean up
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run a script
+        run: echo "A commit was pushed."
+    
+      - name: Get PR branch name
+        id: get_pr_branch_name
+        run: |
+            pr_branch_name=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+            echo "pr_branch_name=${pr_branch_name}" >> $GITHUB_OUTPUT
+            echo $pr_branch_name
+
