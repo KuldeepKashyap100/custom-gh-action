@@ -18,9 +18,10 @@ jobs:
       - name: Get PR branch name
         id: get_pr_branch_name
         run: |
-            branch_name=${GITHUB_REF#refs/heads/}
-            echo "branch_name=${branch_name}" >> $GITHUB_OUTPUT
-            echo $branch_name
+          pr_branch_name=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+          echo "pr_branch_name=${pr_branch_name}" >> $GITHUB_OUTPUT
+          echo $pr_branch_name
+      
 
       - name: Search branch by name
         id: get_branch_id
