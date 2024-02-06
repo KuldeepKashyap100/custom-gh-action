@@ -56,5 +56,5 @@ jobs:
 
           for env in $environments; do
             echo "Removing environment: $env"
-            vercel env rm "$env" --environment=preview --git-branch=$branch_name -t $token -y
+            vercel env rm "$env" preview $branch_name -t $token -y
           done
