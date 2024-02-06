@@ -1,6 +1,12 @@
 name: Deploy Preview
 
-on: [pull_request]
+on:
+  workflow_dispatch:
+      inputs:
+          branch:
+              description:  "Enter the branch name to deploy its preview environment"
+              type: string
+              required: true
 
 jobs:
   deploy_preview:

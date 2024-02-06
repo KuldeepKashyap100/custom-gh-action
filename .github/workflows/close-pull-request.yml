@@ -15,12 +15,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get last commit SHA
-        id: get_pull_request_sha
+      - name: Get PR branch name
+        id: get_pr_branch_name
         run: |
-          pull_request_sha=$(jq --raw-output .pull_request.base.sha "$GITHUB_EVENT_PATH" | cut -c1-8)
-          echo "pull_request_sha=${pull_request_sha}" >> $GITHUB_OUTPUT
-          echo $pull_request_sha
+          pr_branch_name=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+          echo "pr_branch_name=${pr_branch_name}" >> $GITHUB_OUTPUT
+          echo $pr_branch_name
+      
 
       - name: Search branch by name
         id: get_branch_id
@@ -31,7 +32,7 @@ jobs:
             --header "Content-Type: application/json" \
             --header "Authorization: Bearer ${{ secrets.NEON_API_KEY }}" \
             | jq -r .branches \
-            | jq -c '.[] | select(.name | contains("'${{ steps.get_pull_request_sha.outputs.pull_request_sha }}'")) .id' \
+            | jq -c '.[] | select(.name | contains("'${{ steps.get_pr_branch_name.outputs.pr_branch_name }}'")) .id' \
             | jq -r \
             ) \
             
@@ -44,13 +45,15 @@ jobs:
           branch_id: ${{ steps.get_branch_id.outputs.branch_id }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
-      - name: Delete Preview Environments
+      - name: Delete Preview Environment variables
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
-          pull_request_id="${{ steps.get_pull_request_sha.outputs.pull_request_sha }}"
-          environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token -y)
-          echo "Environments to delete: $environments"
+          branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
+
+          environments=$(vercel env ls --environment=preview --git-branch=$branch_name -t $token -y)
+          echo "Environment vars to delete: $environments"
+
           for env in $environments; do
             echo "Removing environment: $env"
-            vercel remove "$env" -t $token -y
+            vercel env rm "$env" --environment=preview --git-branch=$branch_name -t $token -y
           done
