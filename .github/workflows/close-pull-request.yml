@@ -45,13 +45,15 @@ jobs:
           branch_id: ${{ steps.get_branch_id.outputs.branch_id }}
           api_key: ${{ secrets.NEON_API_KEY }}
 
-      - name: Delete Preview Environments
+      - name: Delete Preview Environment variables
         run: |
           token="${{ secrets.VERCEL_TOKEN }}"
-          pull_request_id="${{ steps.get_pull_request_sha.outputs.pull_request_sha }}"
-          environments=$(vercel list -m "pullRequestId=$pull_request_id" -t $token -y)
-          echo "Environments to delete: $environments"
+          branch_name="${{ steps.get_pr_branch_name.outputs.pr_branch_name }}"
+
+          environments=$(vercel env ls preview $branch_name -t $token -y)
+          echo "Environment vars to delete: $environments"
+
           for env in $environments; do
             echo "Removing environment: $env"
-            vercel remove "$env" -t $token -y
+            vercel env rm "$env" preview $branch_name -t $token -y
           done
