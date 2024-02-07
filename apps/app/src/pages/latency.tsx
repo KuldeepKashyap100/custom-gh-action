@@ -32,3 +32,4 @@ const LatencyPage = () => {
 
 export default LatencyPage;
 
+
