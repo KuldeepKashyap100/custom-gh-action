@@ -10,6 +10,24 @@ const pool = new Pool({
 
 
 export const employeeRouter = createTRPCRouter({
+  latencyCheck: publicProcedure.query(async ({ ctx }) => {
+    const { prisma } = ctx;
+    let start, end, latency = { prismaConnectionCheck: 0, prismaFindMany: 0 };
+
+    start = performance.now();
+    await prisma.$executeRaw`SELECT 1;`;
+    end = performance.now();
+    latency = { ...latency, prismaConnectionCheck: end - start };
+    console.log(`prisma connection check query took::: ${end - start}ms`);
+
+    start = performance.now();
+    const result = await prisma.testEmployee.findMany({ orderBy: { id: "desc" } });
+    end = performance.now();
+    latency = { ...latency, prismaFindMany: end - start };
+    console.log(`prisma findMany employees took::: ${end - start}ms`);
+
+    return {employees: result, latency};
+  }),
   all: publicProcedure.query(async ({ ctx }) => {
     const { prisma } = ctx;
     let start, end;
