@@ -1,6 +1,7 @@
-name: Pull Request Closed
+name: Preview Environment Cleanup
 
 on:
+  workflow_dispatch:
   pull_request:
     branches-ignore:
       - "live"
@@ -18,7 +19,11 @@ jobs:
       - name: Get PR branch name
         id: get_pr_branch_name
         run: |
-          pr_branch_name=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            pr_branch_name=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            pr_branch_name=${GITHUB_REF#refs/*/}
+          fi
           echo "pr_branch_name=${pr_branch_name}" >> $GITHUB_OUTPUT
           echo $pr_branch_name
 
