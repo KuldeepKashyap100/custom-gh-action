@@ -20,6 +20,7 @@ model TestEmployee {
   title        String   @map("title")
   organization String   @map("organization") @default("Test")
   department   String   @map("department") @default("engineering")
+  email        String   @map("email")
 
   @@map("test_employee")
 }
